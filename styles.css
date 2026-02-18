@@ -1,0 +1,433 @@
+/* Reset e Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2c5f8d;
+    --secondary-color: #4a90c5;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --light-bg: #f8f9fa;
+    --dark-text: #212529;
+    --border-color: #dee2e6;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.header-content h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.header-content p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Navegação */
+.navigation {
+    display: flex;
+    background: var(--light-bg);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-btn:hover {
+    background: rgba(44, 95, 141, 0.1);
+}
+
+.nav-btn.active {
+    background: white;
+    border-bottom-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Seções */
+.section {
+    display: none;
+    padding: 30px;
+}
+
+.section.active {
+    display: block;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.card h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* Formulários */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Botões */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 95, 141, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    margin: 0 2px;
+}
+
+.form-actions {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border-color);
+}
+
+/* Busca */
+.search-box {
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+/* Tabela */
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+thead {
+    background: var(--primary-color);
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:hover {
+    background: var(--light-bg);
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-novo { background: #d4edda; color: #155724; }
+.badge-bom { background: #cfe2ff; color: #084298; }
+.badge-regular { background: #fff3cd; color: #856404; }
+.badge-ruim { background: #f8d7da; color: #842029; }
+
+/* Lista de Impressão */
+.lista-impressao {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.item-impressao {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: var(--light-bg);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.item-impressao input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+}
+
+/* Estilos de Impressão */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+        margin: 0;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    header, .navigation, .section {
+        display: none;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    /* Layout de Etiquetas - Grade 3x10 para folha A4 */
+    .etiquetas-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        padding: 5mm;
+        page-break-after: always;
+    }
+
+    .etiqueta {
+        width: 63.5mm;
+        height: 25.4mm;
+        border: 1px dashed #ccc;
+        display: flex;
+        align-items: center;
+        padding: 2mm;
+        page-break-inside: avoid;
+        box-sizing: border-box;
+    }
+
+    .etiqueta-qr {
+        width: 20mm;
+        height: 20mm;
+        flex-shrink: 0;
+        margin-right: 2mm;
+    }
+
+    .etiqueta-qr canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .etiqueta-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 7pt;
+        line-height: 1.2;
+    }
+
+    .etiqueta-brasao {
+        font-size: 6pt;
+        font-weight: bold;
+        color: #2c5f8d;
+        margin-bottom: 1mm;
+        text-align: center;
+    }
+
+    .etiqueta-codigo {
+        font-size: 9pt;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 1mm;
+    }
+
+    .etiqueta-secretaria {
+        font-size: 6pt;
+        color: #444;
+        margin-bottom: 0.5mm;
+    }
+
+    .etiqueta-setor {
+        font-size: 6pt;
+        color: #666;
+    }
+}
+
+.print-only {
+    display: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .navigation {
+        flex-direction: column;
+    }
+
+    .nav-btn {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    table {
+        font-size: 0.85rem;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}
+
+/* Página de Detalhes do Item (para QR Code) */
+.item-detalhes {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.item-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    margin: -30px -30px 20px -30px;
+}
+
+.item-codigo {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.info-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-label {
+    font-weight: bold;
+    color: var(--dark-text);
+}
+
+.info-value {
+    color: #495057;
+}

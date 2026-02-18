@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Patrimônio Digital - Prefeitura de Oriximiná</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Sistema de Patrimônio Digital</h1>
+                <p>Prefeitura Municipal de Oriximiná - PA</p>
+            </div>
+        </header>
+
+        <nav class="navigation">
+            <button class="nav-btn active" onclick="showSection('cadastro')">📝 Cadastrar Bem</button>
+            <button class="nav-btn" onclick="showSection('listagem')">📋 Lista de Bens</button>
+            <button class="nav-btn" onclick="showSection('impressao')">🖨️ Imprimir Etiquetas</button>
+        </nav>
+
+        <!-- Seção de Cadastro -->
+        <section id="cadastro" class="section active">
+            <div class="card">
+                <h2>Cadastrar Novo Bem Patrimonial</h2>
+                <form id="formCadastro">
+                    <div class="form-group">
+                        <label for="secretaria">Secretaria *</label>
+                        <select id="secretaria" required>
+                            <option value="">Selecione...</option>
+                            <option value="Assessoria de Controle Interno">ASSESSORIA DE CONTROLE INTERNO</option>
+                            <option value="Gabinete do Prefeito">GABINETE DO PREFEITO</option>
+                            <option value="Procuradoria Geral">PROCURADORIA GERAL DO MUNICÍPIO</option>
+                            <option value="Secretaria de Integração">SECRETARIA DE INTEGRAÇÃO MUNICIPAL</option>
+                            <option value="SEMAGRI">SECRETARIA MUNICIPAL DE AGRICULTURA E ABASTECIMENTO – SEMAGRI</option>
+                            <option value="SMAS">SECRETARIA MUNICIPAL DE ASSISTÊNCIA SOCIAL – SMAS</option>
+                            <option value="SEMC">SECRETARIA MUNICIPAL DE CULTURA – SEMC</option>
+                            <option value="SEINFRA">SECRETARIA MUNICIPAL DE INFRAESTRUTURA- SEINFRA</option>
+                            <option value="SEMED">SECRETARIA MUNICIPAL DE EDUCAÇÃO – SEMED</option>
+                            <option value="SEMFIDE">SECRETARIA MUNICIPAL DE FINANÇAS E DESENVOLVIMENTO ECONÔMICO – SEMFIDE</option>
+                            <option value="SEMMA">SECRETARIA MUNICIPAL DE MEIO AMBIENTE E MINERAÇÃO – SEMMA</option>
+                            <option value="SEMPLAD">SECRETARIA MUNICIPAL DE PLANEJAMENTO E ADMINISTRAÇÃO – SEMPLAD</option>
+                            <option value="SEMUSP">SECRETARIA MUNICIPAL DE SEGURANÇA PÚBLICA E DEFESA SOCIAL – SEMUSP</option>
+                            <option value="SMS">SECRETARIA MUNICIPAL DE SAÚDE – SMS</option>
+                            <option value="SEMESP">SECRETARIA MUNICIPAL DO ESPORTE – SEMESP</option>
+                            <option value="SEMOPH">SECRETARIA MUNICIPAL DE OBRAS PÚBLICAS E HABITAÇÃO – SEMOPH</option>
+                            <option value="SEMJU">SECRETARIA MUNICIPAL DA JUVENTUDE – SEMJU</option>
+                            <option value="SEMEG">SECRETARIA MUNICIPAL DE EFICIÊNCIA GOVERNAMENTAL – SEMEG</option>
+                            <option value="SEMCO">SECRETARIA MUNICIPAL DE COMUNICAÇÃO – SEMCO</option>
+                            <option value="SEMPIRDH">SECRETARIA MUNICIPAL DE PROMOÇÃO DA IGUALDADE RACIAL E DOS DIREITOS HUMANOS – SEMPIRDH</option>
+                          
+                    </div>
+
+                    <div class="form-group">
+                        <label for="setor">Setor *</label>
+                        <input type="text" id="setor" placeholder="Ex: Departamento de TI" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição do Bem *</label>
+                        <input type="text" id="descricao" placeholder="Ex: Notebook Dell Inspiron" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="marca">Marca/Modelo</label>
+                        <input type="text" id="marca" placeholder="Ex: Dell Inspiron 15 3000">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numeroSerie">Número de Série</label>
+                            <input type="text" id="numeroSerie" placeholder="Ex: SN123456789">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dataAquisicao">Data de Aquisição *</label>
+                            <input type="date" id="dataAquisicao" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="valorAquisicao">Valor de Aquisição (R$)</label>
+                            <input type="number" id="valorAquisicao" step="0.01" placeholder="0.00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estado">Estado de Conservação *</label>
+                            <select id="estado" required>
+                                <option value="">Selecione...</option>
+                                <option value="Novo">Novo</option>
+                                <option value="Bom">Bom</option>
+                                <option value="Regular">Regular</option>
+                                <option value="Ruim">Ruim</option>
+                                <option value="Inservível">Inservível</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observacoes">Observações</label>
+                        <textarea id="observacoes" rows="3" placeholder="Informações adicionais sobre o bem..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Cadastrar Bem</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Limpar Formulário</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Seção de Listagem -->
+        <section id="listagem" class="section">
+            <div class="card">
+                <h2>Bens Patrimoniais Cadastrados</h2>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 Buscar por código, descrição, secretaria...">
+                </div>
+
+                <div class="table-responsive">
+                    <table id="tabelaBens">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Secretaria</th>
+                                <th>Setor</th>
+                                <th>Data</th>
+                                <th>Estado</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabela">
+                            <!-- Dados carregados dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Impressão -->
+        <section id="impressao" class="section">
+            <div class="card no-print">
+                <h2>Gerar Etiquetas para Impressão</h2>
+                <p>Selecione os bens que deseja imprimir etiquetas:</p>
+                
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="selecionarTodos()">✓ Selecionar Todos</button>
+                    <button class="btn btn-secondary" onclick="deselecionarTodos()">✗ Desmarcar Todos</button>
+                    <button class="btn btn-success" onclick="imprimirEtiquetas()">🖨️ Imprimir Selecionados</button>
+                </div>
+
+                <div id="listaBensImpressao" class="lista-impressao">
+                    <!-- Lista de checkboxes carregada dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Área de impressão (oculta na tela) -->
+            <div id="areaImpressao" class="print-only">
+                <!-- Etiquetas geradas dinamicamente -->
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

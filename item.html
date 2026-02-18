@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Patrimônio - Prefeitura de Oriximiná</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .item-header {
+            background: linear-gradient(135deg, #2c5f8d, #4a90c5);
+            color: white;
+            padding: 30px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+
+        .item-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .item-codigo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+
+        .item-body {
+            padding: 30px;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-section h3 {
+            color: #2c5f8d;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-label::before {
+            content: '•';
+            margin-right: 8px;
+            color: #2c5f8d;
+            font-size: 1.2rem;
+        }
+
+        .info-value {
+            color: #212529;
+            flex: 1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-novo { background: #d4edda; color: #155724; }
+        .status-bom { background: #cfe2ff; color: #084298; }
+        .status-regular { background: #fff3cd; color: #856404; }
+        .status-ruim { background: #f8d7da; color: #842029; }
+        .status-inservivel { background: #e2e3e5; color: #383d41; }
+
+        .footer-info {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-radius: 0 0 15px 15px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 50px 30px;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2c5f8d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-voltar:hover {
+            background: #4a90c5;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .info-item {
+                flex-direction: column;
+            }
+
+            .info-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+
+            .item-codigo {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="item-container" id="itemContainer">
+        <!-- Conteúdo carregado dinamicamente -->
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Obter código do bem da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const codigo = urlParams.get('codigo');
+
+        function carregarDetalhes() {
+            const container = document.getElementById('itemContainer');
+
+            if (!codigo) {
+                container.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-message">Código não especificado</div>
+                        <a href="index.html" class="btn-voltar">← Voltar ao Sistema</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Buscar bem no banco de dados
+            const bem = window.PatrimonioSystem.db.buscarPorCodigo(codigo);
+
+            if (!bem) {
+                container.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-icon">🔍</div>
+                        <div class="error-message">Patrimônio não encontrado</div>
+                        <p style="color: #6c757d; margin-bottom: 20px;">
+                            O código <strong>${codigo}</strong> não existe no sistema.
+                        </p>
+                        <a href="index.html" class="btn-voltar">← Voltar ao Sistema</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Renderizar detalhes do bem
+            const estadoClass = bem.estado.toLowerCase().replace('í', 'i').replace('ível', 'ivel');
+            
+            container.innerHTML = `
+                <div class="item-header">
+                    <h1>🏛️ Prefeitura de Oriximiná</h1>
+                    <p>Sistema de Patrimônio Digital</p>
+                    <div class="item-codigo">${bem.codigo}</div>
+                </div>
+
+                <div class="item-body">
+                    <div class="info-section">
+                        <h3>📋 Informações Básicas</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Descrição</div>
+                                <div class="info-value"><strong>${bem.descricao}</strong></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Secretaria</div>
+                                <div class="info-value">${bem.secretaria}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Setor</div>
+                                <div class="info-value">${bem.setor}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>🔧 Especificações</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Marca/Modelo</div>
+                                <div class="info-value">${bem.marca || 'Não informado'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Número de Série</div>
+                                <div class="info-value">${bem.numeroSerie || 'Não informado'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Estado</div>
+                                <div class="info-value">
+                                    <span class="status-badge status-${estadoClass}">${bem.estado}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>💰 Informações Financeiras</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Data de Aquisição</div>
+                                <div class="info-value">${window.PatrimonioSystem.formatarData(bem.dataAquisicao)}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Valor de Aquisição</div>
+                                <div class="info-value">${window.PatrimonioSystem.formatarMoeda(bem.valorAquisicao)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${bem.observacoes ? `
+                        <div class="info-section">
+                            <h3>📝 Observações</h3>
+                            <div class="info-value" style="padding: 10px; background: #f8f9fa; border-radius: 5px; margin-top: 10px;">
+                                ${bem.observacoes}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <a href="index.html" class="btn-voltar">← Voltar ao Sistema</a>
+                    </div>
+                </div>
+
+                <div class="footer-info">
+                    📅 Cadastrado em ${window.PatrimonioSystem.formatarData(bem.dataCadastro)}
+                    <br>
+                    Sistema de Patrimônio Digital - Prefeitura de Oriximiná
+                </div>
+            `;
+        }
+
+        // Carregar detalhes quando a página carregar
+        document.addEventListener('DOMContentLoaded', carregarDetalhes);
+    </script>
+</body>
+</html>
