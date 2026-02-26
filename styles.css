@@ -431,3 +431,30 @@ tbody tr:hover {
 .info-value {
     color: #495057;
 }
+
+@media print {
+    /* Define o tamanho da folha A4 e remove margens do navegador */
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    
+    /* Grid para etiquetas 3x10 (Padrão 63.5mm x 25.4mm) */
+    .etiquetas-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 63.5mm);
+        grid-auto-rows: 25.4mm;
+        gap: 0; /* Ajuste conforme o espaçamento da sua folha de etiquetas */
+        padding: 5mm; /* Margem de segurança da impressora */
+    }
+
+    .etiqueta {
+        width: 63.5mm;
+        height: 25.4mm;
+        border: 0.1mm solid #eee; /* Linha guia suave para corte */
+        padding: 2mm;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+}
