@@ -69,7 +69,7 @@ class PatrimonioDB {
     buscar(termo) {
         const bens = this.listarTodos();
         const termoLower = termo.toLowerCase();
-        return bens.filter(bem => 
+        return bens.filter(bem =>
             bem.codigo.toLowerCase().includes(termoLower) ||
             bem.descricao.toLowerCase().includes(termoLower) ||
             bem.secretaria.toLowerCase().includes(termoLower) ||
@@ -84,23 +84,15 @@ const db = new PatrimonioDB();
 
 // Gerenciamento de Interface
 function showSection(sectionId) {
-    // Ocultar todas as seções
     document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
     });
-
-    // Remover classe active de todos os botões
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-
-    // Mostrar seção selecionada
     document.getElementById(sectionId).classList.add('active');
-
-    // Ativar botão correspondente
     event.target.classList.add('active');
 
-    // Atualizar dados se necessário
     if (sectionId === 'listagem') {
         carregarTabela();
     } else if (sectionId === 'impressao') {
@@ -141,13 +133,8 @@ document.getElementById('formCadastro').addEventListener('submit', function(e) {
     };
 
     const bemCadastrado = db.adicionar(novoBem);
-
     alert(`✅ Bem cadastrado com sucesso!\n\nCódigo: ${bemCadastrado.codigo}\nDescrição: ${bemCadastrado.descricao}`);
-
-    // Limpar formulário
     this.reset();
-
-    // Definir data atual como padrão
     document.getElementById('dataAquisicao').valueAsDate = new Date();
 });
 
@@ -266,12 +253,14 @@ function deselecionarTodos() {
     });
 }
 
-// Gerar QR Code
-function gerarQRCode(texto, tamanho = 200) {
+// ============================================================
+// Gerar QR Code (retorna um <canvas> pronto)
+// ============================================================
+function gerarQRCode(texto, tamanhoPixels = 300) {
     return new Promise((resolve, reject) => {
         const canvas = document.createElement('canvas');
         QRCode.toCanvas(canvas, texto, {
-            width: tamanho,
+            width: tamanhoPixels,
             margin: 1,
             errorCorrectionLevel: 'M'
         }, (error) => {
@@ -281,93 +270,114 @@ function gerarQRCode(texto, tamanho = 200) {
     });
 }
 
-// Imprimir etiquetas selecionadas
-async function imprimirEtiquetas() {
-    const checkboxes = document.querySelectorAll('#listaBensImpressao input[type="checkbox"]:checked');
-    
-    if (checkboxes.length === 0) {
-        alert('⚠️ Selecione pelo menos um bem para impressão!');
-        return;
-    }
-
-    const ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
-    const bens = ids.map(id => db.buscarPorId(id)).filter(Boolean);
-
-    const areaImpressao = document.getElementById('areaImpressao');
-    areaImpressao.innerHTML = '';
-
-    // Agrupar em folhas de 30 etiquetas (3x10)
-    const etiquetasPorFolha = 30;
-    const numFolhas = Math.ceil(bens.length / etiquetasPorFolha);
-
-    for (let folha = 0; folha < numFolhas; folha++) {
-        const grid = document.createElement('div');
-        grid.className = 'etiquetas-grid';
-
-        const inicio = folha * etiquetasPorFolha;
-        const fim = Math.min(inicio + etiquetasPorFolha, bens.length);
-
-        for (let i = inicio; i < fim; i++) {
-            const bem = bens[i];
-            const etiqueta = await criarEtiqueta(bem);
-            grid.appendChild(etiqueta);
-        }
-
-        // Preencher espaços vazios se necessário
-        const etiquetasNaFolha = fim - inicio;
-        for (let i = etiquetasNaFolha; i < etiquetasPorFolha; i++) {
-            const etiquetaVazia = document.createElement('div');
-            etiquetaVazia.className = 'etiqueta';
-            grid.appendChild(etiquetaVazia);
-        }
-
-        areaImpressao.appendChild(grid);
-    }
-
-    // Aguardar renderização e imprimir
-    setTimeout(() => {
-        window.print();
-    }, 500);
-}
-
-// Criar etiqueta individual
+// ============================================================
+// Criar etiqueta individual 62x62mm para impressora térmica
+//
+// Layout vertical (de cima para baixo):
+//   1. Brasão / nome da prefeitura   (topo)
+//   2. QR Code                        (centro)
+//   3. Código + Secretaria + Setor    (base)
+// ============================================================
 async function criarEtiqueta(bem) {
     const etiqueta = document.createElement('div');
     etiqueta.className = 'etiqueta';
 
-    // URL que o QR Code vai apontar (em produção, usar domínio real)
+    // URL que o QR Code vai apontar
     const url = `${window.location.origin}/item.html?codigo=${bem.codigo}`;
 
-    // Gerar QR Code
-    const qrCanvas = await gerarQRCode(url, 200);
-    
+    // --- Cabeçalho: brasão ---
+    const brasaoDiv = document.createElement('div');
+    brasaoDiv.className = 'etiqueta-brasao';
+    brasaoDiv.textContent = 'PREFEITURA DE ORIXIMINÁ';
+
+    // --- QR Code ---
+    // Geramos em alta resolução (300px) e o CSS de impressão
+    // vai escalar para 32mm via width/height em mm.
+    const qrCanvas = await gerarQRCode(url, 300);
     const qrDiv = document.createElement('div');
     qrDiv.className = 'etiqueta-qr';
     qrDiv.appendChild(qrCanvas);
 
+    // --- Informações do bem ---
     const infoDiv = document.createElement('div');
     infoDiv.className = 'etiqueta-info';
-    infoDiv.innerHTML = `
-        <div class="etiqueta-brasao">🏛️ PREFEITURA DE ORIXIMINÁ</div>
-        <div class="etiqueta-codigo">${bem.codigo}</div>
-        <div class="etiqueta-secretaria">${bem.secretaria}</div>
-        <div class="etiqueta-setor">${bem.setor}</div>
-    `;
 
+    const codigoSpan = document.createElement('div');
+    codigoSpan.className = 'etiqueta-codigo';
+    codigoSpan.textContent = bem.codigo;
+
+    const secretariaSpan = document.createElement('div');
+    secretariaSpan.className = 'etiqueta-secretaria';
+    secretariaSpan.textContent = bem.secretaria;
+
+    const setorSpan = document.createElement('div');
+    setorSpan.className = 'etiqueta-setor';
+    setorSpan.textContent = bem.setor;
+
+    infoDiv.appendChild(codigoSpan);
+    infoDiv.appendChild(secretariaSpan);
+    infoDiv.appendChild(setorSpan);
+
+    // Montar etiqueta
+    etiqueta.appendChild(brasaoDiv);
     etiqueta.appendChild(qrDiv);
     etiqueta.appendChild(infoDiv);
 
     return etiqueta;
 }
 
+// ============================================================
+// Imprimir etiquetas selecionadas
+//
+// Diferenças em relação ao código anterior:
+//   - Removido o conceito de "folha" com 30 etiquetas em grade.
+//   - Cada bem gera UMA div.etiqueta adicionada sequencialmente.
+//   - O CSS @page + page-break-after garante um corte por etiqueta
+//     na Brother QL-810 (ou qualquer impressora de rolo configurada
+//     com papel 62x62mm no diálogo de impressão do SO).
+// ============================================================
+async function imprimirEtiquetas() {
+    const checkboxes = document.querySelectorAll(
+        '#listaBensImpressao input[type="checkbox"]:checked'
+    );
+
+    if (checkboxes.length === 0) {
+        alert('⚠️ Selecione pelo menos um bem para impressão!');
+        return;
+    }
+
+    const ids  = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    const bens = ids.map(id => db.buscarPorId(id)).filter(Boolean);
+
+    // Limpar área de impressão anterior
+    const areaImpressao = document.getElementById('areaImpressao');
+    areaImpressao.innerHTML = '';
+
+    // Gerar uma etiqueta por bem — sem agrupamento em grade
+    for (const bem of bens) {
+        const etiqueta = await criarEtiqueta(bem);
+        areaImpressao.appendChild(etiqueta);
+    }
+
+    /*
+     * Aguarda o browser renderizar os canvas dos QR Codes
+     * antes de abrir o diálogo de impressão.
+     *
+     * Instrução ao usuário no diálogo do SO:
+     *   - Selecionar impressora: Brother QL-810 (ou QL-810W)
+     *   - Tamanho do papel: 62x62mm (DK-11204 ou DK-22205 cortado)
+     *   - Margens: Nenhuma / None
+     *   - Escala: 100% (sem ajuste de página)
+     */
+    setTimeout(() => {
+        window.print();
+    }, 600);
+}
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    // Definir data atual como padrão no formulário
     document.getElementById('dataAquisicao').valueAsDate = new Date();
-
-    // Carregar dados iniciais
     carregarTabela();
-
     console.log('✅ Sistema de Patrimônio Digital inicializado!');
     console.log(`📊 Total de bens cadastrados: ${db.listarTodos().length}`);
 });
